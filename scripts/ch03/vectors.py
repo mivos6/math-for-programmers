@@ -14,11 +14,11 @@ def components2d(vector):
 
 
 def length(vector):
-    return math.sqrt(sum([c**2 for c in vector]))
+    return math.sqrt(sum([c ** 2 for c in vector]))
 
 
 def scale(scalar, vector):
-    return tuple([scalar*c for c in vector])
+    return tuple([scalar * c for c in vector])
 
 
 def scale_all(scalar, vectors):
@@ -39,27 +39,27 @@ def direction2d(vector):
 
 def to_cartesian(polar_vector):
     r, theta = polar_vector[0], polar_vector[1]
-    return (r * math.cos(theta), r * math.sin(theta))
+    return r * math.cos(theta), r * math.sin(theta)
 
 
 def to_polar(cartesian_vector):
-    return (length(cartesian_vector), direction2d(cartesian_vector))
+    return length(cartesian_vector), direction2d(cartesian_vector)
 
 
 def rad(deg):
-    return deg * math.pi/180
+    return deg * math.pi / 180
 
 
 def deg(rad):
-    return rad * 180/math.pi
+    return rad * 180 / math.pi
 
 
 def normalize_radians(rad):
-    return rad - 2*math.pi * math.floor(rad / (2*math.pi))
+    return rad - 2 * math.pi * math.floor(rad / (2 * math.pi))
 
 
-def rotate(angle, vectors):
-    return [to_cartesian((length(v), direction2d(v) + angle)) for v in vectors]
+def rotate2d(degrees, vectors):
+    return [to_cartesian((length(v), direction2d(v) + degrees)) for v in vectors]
 
 
 def unit(v):
@@ -77,4 +77,21 @@ def angle(u, v):
 def cross(u, v):
     ux, uy, uz = u[0], u[1], u[2]
     vx, vy, vz = v[0], v[1], v[2]
-    return (uy*vz - uz*vy), (uz*vx - ux*vz), (ux*vy - uy*vx)
+    return (uy * vz - uz * vy), (uz * vx - ux * vz), (ux * vy - uy * vx)
+
+
+def vertices(*triangles):
+    return list(set([vertex for triangle in triangles for vertex in triangle]))
+
+
+def normal(triangle):
+    return cross(subtract(triangle[1], triangle[0]), subtract(triangle[2], triangle[0]))
+
+
+def projection_length(vector, projection_vector):
+    return dot(vector, projection_vector) / length(projection_vector)
+
+
+def project_vectors_to_xy_plane(*vectors):
+    return [(projection_length(v, (1, 0, 0)), projection_length(v, (0, 1, 0)))
+            for v in vectors]
