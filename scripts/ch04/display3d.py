@@ -45,11 +45,12 @@ def create_window(properties):
     return window
 
 
-def quit_if_prompted():
+def should_quit():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            quit()
+            return True
+    return False
 
 
 def render(model, light_source):
@@ -77,9 +78,7 @@ def display(model, light_source, properties=None):
     create_window(properties)
     clock = pygame.time.Clock()
 
-    while True:
-        quit_if_prompted()
-
+    while not should_quit():
         delta_milliseconds = clock.tick()
         rotate_camera(properties['camera']['rotate']['rate'],
                       properties['camera']['rotate']['axis'],
