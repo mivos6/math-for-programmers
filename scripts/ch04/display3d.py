@@ -14,9 +14,10 @@ default_display_properties = {
         'min_z': 0.1,
         'max_z': 50.0
     },
-    'camera': {
+    'scene': {
         'translate': (0.0, 0.0, -5.0),
         'rotate': {
+            'initial': 0.0,
             'rate': 0.0,
             'axis': (0.0, 1.0, 0.0)
         }
@@ -36,7 +37,10 @@ def create_window(properties):
                    properties['perspective']['aspect_ratio'],
                    properties['perspective']['min_z'],
                    properties['perspective']['max_z'])
-    glTranslate(*properties['camera']['translate'])
+
+    glTranslate(*properties['scene']['translate'])
+    glRotatef(properties['scene']['rotate']['initial'],
+              *properties['scene']['rotate']['axis'])
 
     glEnable(GL_CULL_FACE)
     glEnable(GL_DEPTH_TEST)
@@ -65,7 +69,7 @@ def render(model, light_source):
     pygame.display.flip()
 
 
-def rotate_camera(rate=0.0, axis=(0, 0, 1), delta_milliseconds=0):
+def rotate_scene(rate=0.0, axis=(0, 0, 1), delta_milliseconds=0):
     if rate > 0.0:
         delta_angle = rate / 1000 * delta_milliseconds
         glRotatef(delta_angle, *axis)
@@ -80,8 +84,8 @@ def display(model, light_source, properties=None):
 
     while not should_quit():
         delta_milliseconds = clock.tick()
-        rotate_camera(properties['camera']['rotate']['rate'],
-                      properties['camera']['rotate']['axis'],
-                      delta_milliseconds)
+        rotate_scene(properties['scene']['rotate']['rate'],
+                     properties['scene']['rotate']['axis'],
+                     delta_milliseconds)
 
         render(model, light_source)

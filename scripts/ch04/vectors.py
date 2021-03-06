@@ -5,10 +5,6 @@ def add(*vectors):
     return tuple(map(sum, zip(*vectors)))
 
 
-def translate(translation_vec, vectors):
-    return [add(translation_vec, v) for v in vectors]
-
-
 def components2d(vector):
     return [(vector[0], 0), (0, vector[1])]
 
@@ -19,10 +15,6 @@ def length(vector):
 
 def scale(scalar, vector):
     return tuple([scalar * c for c in vector])
-
-
-def scale_all(scalar, vectors):
-    return [scale(scalar, v) for v in vectors]
 
 
 def subtract(v1, v2):
@@ -46,16 +38,16 @@ def to_polar(cartesian_vector):
     return length(cartesian_vector), direction2d(cartesian_vector)
 
 
-def rad(deg):
-    return deg * math.pi / 180
+def deg(angle_rad):
+    return angle_rad * 180 / math.pi
 
 
-def deg(rad):
-    return rad * 180 / math.pi
+def rad(angle_deg):
+    return angle_deg * math.pi / 180
 
 
-def normalize_radians(rad):
-    return rad - 2 * math.pi * math.floor(rad / (2 * math.pi))
+def normalize_angle(angle_rad):
+    return angle_rad - 2 * math.pi * math.floor(angle_rad / (2 * math.pi))
 
 
 def rotate2d(degrees, vectors):
