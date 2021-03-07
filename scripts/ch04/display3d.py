@@ -4,25 +4,13 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import matplotlib.cm
 from vectors import *
-from math import *
+from collections import namedtuple
 
-default_display_properties = {
-    'window_size': (400, 400),
-    'perspective': {
-        'fov': 45,
-        'aspect_ratio': 1.0,
-        'min_z': 0.1,
-        'max_z': 50.0
-    },
-    'scene': {
-        'translate': (0.0, 0.0, -5.0),
-        'rotate': {
-            'initial': 0.0,
-            'rate': 0.0,
-            'axis': (0.0, 1.0, 0.0)
-        }
-    }
-}
+Rotation = namedtuple('Rotation', ['initial', 'rate', 'axis'], defaults=[0.0, 0.0, (0.0, 1.0, 0.0)])
+Scene = namedtuple('Scene', ['translate', 'rotate'], defaults=[(0.0, 0.0, -5.0), Rotation()])
+Perspective = namedtuple('Perspective', ['fov', 'aspect_ratio', 'min_z', 'max_z'], defaults=[45.0, 1.0, 0.1, 50.0])
+DisplayProperties = namedtuple('DisplayProperties', ['window_size', 'perspective', 'scene'],
+                               defaults=[(400, 400), Perspective(), Scene()])
 
 
 def shade(triangle, light_source, colormap=matplotlib.cm.get_cmap('Blues')):
@@ -31,16 +19,16 @@ def shade(triangle, light_source, colormap=matplotlib.cm.get_cmap('Blues')):
 
 def create_window(properties):
     pygame.init()
-    window = pygame.display.set_mode(properties['window_size'], DOUBLEBUF | OPENGL)
+    window = pygame.display.set_mode(properties.window_size, DOUBLEBUF | OPENGL)
 
-    gluPerspective(properties['perspective']['fov'],
-                   properties['perspective']['aspect_ratio'],
-                   properties['perspective']['min_z'],
-                   properties['perspective']['max_z'])
+    gluPerspective(properties.perspective.fov,
+                   properties.perspective.aspect_ratio,
+                   properties.perspective.min_z,
+                   properties.perspective.max_z)
 
-    glTranslate(*properties['scene']['translate'])
-    glRotatef(properties['scene']['rotate']['initial'],
-              *properties['scene']['rotate']['axis'])
+    glTranslate(*properties.scene.translate)
+    glRotatef(properties.scene.rotate.initial,
+              *properties.scene.rotate.axis)
 
     glEnable(GL_CULL_FACE)
     glEnable(GL_DEPTH_TEST)
@@ -75,17 +63,14 @@ def rotate_scene(rate=0.0, axis=(0, 0, 1), delta_milliseconds=0):
         glRotatef(delta_angle, *axis)
 
 
-def display(model, light_source, properties=None):
-    if properties is None:
-        properties = default_display_properties
-
+def display(model, light_source, properties=DisplayProperties()):
     create_window(properties)
     clock = pygame.time.Clock()
 
     while not should_quit():
         delta_milliseconds = clock.tick()
-        rotate_scene(properties['scene']['rotate']['rate'],
-                     properties['scene']['rotate']['axis'],
+        rotate_scene(properties.scene.rotate.rate,
+                     properties.scene.rotate.axis,
                      delta_milliseconds)
 
         render(model, light_source)
