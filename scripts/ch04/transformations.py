@@ -1,4 +1,4 @@
-from vectors import add, scale
+from vectors import add, scale, rotate_z, rotate_x
 
 
 def map_to_polygons(transformation, polygons):
@@ -21,3 +21,11 @@ def scale_by(scalar):
 
 def translate_by(translation_vector):
     return lambda vector: add(translation_vector, vector)
+
+
+def rotate_z_by(radians):
+    return lambda vector: rotate_z(radians, vector)
+
+
+def rotate_x_by(radians):
+    return lambda vector: rotate_x(radians, vector)

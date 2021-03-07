@@ -50,10 +50,6 @@ def normalize_angle(angle_rad):
     return angle_rad - 2 * math.pi * math.floor(angle_rad / (2 * math.pi))
 
 
-def rotate2d(degrees, vectors):
-    return [to_cartesian((length(v), direction2d(v) + degrees)) for v in vectors]
-
-
 def unit(v):
     return scale(1 / length(v), v)
 
@@ -87,3 +83,19 @@ def projection_length(vector, projection_vector):
 def project_vectors_to_xy_plane(*vectors):
     return [(projection_length(v, (1, 0, 0)), projection_length(v, (0, 1, 0)))
             for v in vectors]
+
+
+def rotate2d(radians, vector):
+    return to_cartesian((length(vector), direction2d(vector) + radians))
+
+
+def rotate_z(radians, vector):
+    x, y, z = vector
+    xr, yr = rotate2d(radians, (x, y))
+    return xr, yr, z
+
+
+def rotate_x(radians, vector):
+    x, y, z = vector
+    yr, zr = rotate2d(radians, (y, z))
+    return x, yr, zr
