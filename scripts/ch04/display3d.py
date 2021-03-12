@@ -45,8 +45,21 @@ def should_quit():
     return False
 
 
-def render(model, light_source):
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+def render_axes():
+    axes = [
+        [(-1000.0, 0.0, 0.0), (1000.0, 0.0, 0.0)],
+        [(0.0, -1000.0, 0.0), (0.0, 1000.0, 0.0)],
+        [(0.0, 0.0, -1000.0), (0.0, 0.0, 1000.0)]
+    ]
+    glBegin(GL_LINES)
+    for axis in axes:
+        for vertex in axis:
+            glColor3fv((1.0, 1.0, 1.0))
+            glVertex3fv(vertex)
+    glEnd()
+
+
+def render_polygons(model, light_source):
     glBegin(GL_TRIANGLES)
     for polygon in model:
         color = shade(polygon, light_source)
@@ -73,4 +86,6 @@ def display(model, light_source, properties=DisplayProperties()):
                      properties.scene.rotate.axis,
                      delta_milliseconds)
 
-        render(model, light_source)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        render_axes()
+        render_polygons(model, light_source)
