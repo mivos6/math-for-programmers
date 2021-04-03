@@ -4,8 +4,11 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import matplotlib.cm
 from vectors import *
+from transformations import *
 from collections import namedtuple
 import PIL.Image
+import functools
+import math
 
 import time
 
@@ -33,10 +36,8 @@ def set_perspective(properties):
     glCullFace(GL_BACK)
 
 
-def create_window(properties):
-    pygame.init()
-    window = pygame.display.set_mode(properties.window_size, DOUBLEBUF | OPENGL)
-
+def create_window(properties, hidden=False):
+    window = pygame.display.set_mode(properties.window_size, DOUBLEBUF | OPENGL | (HIDDEN if hidden else 0))
     set_perspective(properties)
 
     return window
@@ -81,6 +82,7 @@ def rotate_scene(rate=0.0, axis=(0, 0, 1), delta_milliseconds=0):
 
 
 def display_in_window(model, light_source, properties=DisplayProperties()):
+    pygame.init()
     window = create_window(properties)
     clock = pygame.time.Clock()
 
@@ -96,24 +98,57 @@ def display_in_window(model, light_source, properties=DisplayProperties()):
         pygame.display.flip()
 
 
-def render_image(model, light_source, properties=DisplayProperties()):
-    pygame.display.init()
-    window = pygame.display.set_mode(properties.window_size, DOUBLEBUF | OPENGL | HIDDEN)
+def pygame_display(func):
+    @functools.wraps(func)
+    def pygame_wrapper(*args, **kwargs):
+        pygame.display.init()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            pygame.display.quit()
+    return pygame_wrapper
 
-    set_perspective(properties)
 
+@pygame_display
+def render_frame(model, light_source, properties=DisplayProperties()):
+    window = create_window(properties, hidden=True)
+
+    screen_surface = render_on_surface(model, light_source, window.get_size())
+    # swap the x, y axes since arrays are indexed column-first
+    screen_array = pygame.surfarray.array3d(screen_surface).swapaxes(0, 1)
+
+    return PIL.Image.fromarray(screen_array)
+
+
+def render_on_surface(model, light_source, surface_size):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     render_axes()
     render_polygons(model, light_source)
 
     # https://stackoverflow.com/questions/66209365/how-to-save-pygame-scene-as-jpeg
-    size = window.get_size()
-    pixel_buffer = glReadPixels(0, 0, *size, GL_RGB, GL_UNSIGNED_BYTE)
+    pixel_buffer = glReadPixels(0, 0, *surface_size, GL_RGB, GL_UNSIGNED_BYTE)
 
     # create a flipped surface because glReadPixels will invert the order of rows in memory
-    screen_surface = pygame.image.fromstring(pixel_buffer, size, "RGB", True)
-    # swap the x, y axes since arrays are indexed column-first
-    screen_array = pygame.surfarray.array3d(screen_surface).swapaxes(0, 1)
+    return pygame.image.fromstring(pixel_buffer, surface_size, "RGB", True)
 
-    pygame.display.quit()
+
+@pygame_display
+def render_sequence(starting_model, light_source, transform_sequence, num_horizontal_frames=5, properties=DisplayProperties()):
+    window = create_window(properties, hidden=True)
+    frame_size = window.get_size()
+
+    num_vertical_frames = math.ceil(float(len(transform_sequence) + 1) / num_horizontal_frames)
+    result_surface = pygame.Surface((frame_size[0] * num_horizontal_frames, frame_size[1] * num_vertical_frames))
+    result_surface.fill((255, 255, 255))
+
+    model = starting_model
+    current_frame = render_on_surface(model, light_source, frame_size)
+    result_surface.blit(current_frame, (0, 0))
+    for i, next_transform in enumerate(transform_sequence):
+        model = map_to_polygons(next_transform, model)
+        current_frame = render_on_surface(model, light_source, frame_size)
+        row, col = int((i + 1) / num_horizontal_frames), (i + 1) % num_horizontal_frames
+        result_surface.blit(current_frame, (frame_size[0] * col, frame_size[1] * row))
+
+    screen_array = pygame.surfarray.array3d(result_surface).swapaxes(0, 1)
     return PIL.Image.fromarray(screen_array)
