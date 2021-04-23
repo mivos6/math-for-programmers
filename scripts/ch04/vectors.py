@@ -91,11 +91,17 @@ def rotate2d(radians, vector):
 
 def rotate_z(radians, vector):
     x, y, z = vector
+    if x == y == 0:
+        return vector
+
     xr, yr = rotate2d(radians, (x, y))
     return xr, yr, z
 
 
 def rotate_x(radians, vector):
     x, y, z = vector
+    if y == z == 0:
+        return vector
+
     yr, zr = rotate2d(radians, (y, z))
     return x, yr, zr
