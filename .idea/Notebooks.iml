@@ -4,7 +4,6 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/scripts/ch04/.hypothesis" />
       <excludeFolder url="file://$MODULE_DIR$/scripts/ch04/.pytest_cache" />
-      <excludeFolder url="file://$MODULE_DIR$/scripts/ch05" />
       <excludeFolder url="file://$MODULE_DIR$/.hypothesis" />
       <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
     </content>

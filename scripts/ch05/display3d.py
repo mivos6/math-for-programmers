@@ -5,6 +5,7 @@ from OpenGL.GLU import *
 import matplotlib.cm
 from vectors import *
 from transformations import *
+from matrices import *
 from collections import namedtuple
 import PIL.Image
 import functools
@@ -88,14 +89,31 @@ def display_in_window(model, light_source, properties=DisplayProperties()):
 
     while not should_quit():
         delta_milliseconds = clock.tick()
-        rotate_scene(properties.scene.rotate.rate,
-                     properties.scene.rotate.axis,
-                     delta_milliseconds)
+        # rotate_scene(properties.scene.rotate.rate,
+        #              properties.scene.rotate.axis,
+        #              delta_milliseconds)
+        rot_matrix = get_rotation_matrix(delta_milliseconds)
+
+        # rotate model
+        model = map_to_polygons(
+            lambda vector: multiply_matrix_vector(rot_matrix, vector),
+            model
+        )
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         render_axes()
         render_polygons(model, light_source)
         pygame.display.flip()
+
+
+def get_rotation_matrix(delta_milliseconds):
+    delta_seconds = delta_milliseconds/1000.0
+
+    return (
+        (math.cos(delta_seconds), 0, -math.sin(delta_seconds)),
+        (0, 1, 0),
+        (math.sin(delta_seconds), 0, math.cos(delta_seconds))
+    )
 
 
 def pygame_display(func):

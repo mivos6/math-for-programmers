@@ -105,3 +105,10 @@ def rotate_x(radians, vector):
 
     yr, zr = rotate2d(radians, (y, z))
     return x, yr, zr
+
+
+def linear_combination(scalars, *vectors):
+    assert len(scalars) == len(vectors), "{} != {}".format(len(scalars), len(vectors))
+
+    scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
+    return add(*scaled)
