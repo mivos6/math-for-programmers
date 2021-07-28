@@ -1,7 +1,7 @@
 from vectors import add, subtract, scale
 
 
-def epsilon_equal(u, v, epsilon):
+def epsilon_equal(u, v, epsilon=1e-6):
     return False not in [abs(delta) < epsilon for delta in subtract(u, v)]
 
 
