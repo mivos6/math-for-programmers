@@ -12,7 +12,7 @@ def test_is_rotate_z_linear(u, v, s):
 
 
 @given(u=vectors, v=vectors, s=scalars)
-def test_is_translate_linear(u, v, s):
+def __test_is_translate_linear(u, v, s):
     i, j, k = (1, 0, 0), (0, 1, 0), (0, 0, 1)
 
     assert_transformation_is_linear(translate_by(i), u, v, s)
