@@ -7,9 +7,9 @@ def multiply_matrix_vector(m, v):
 
 def multiply_matrix_vector2(m, v):
     return tuple(
-            sum(row_elem*vector_elem for row_elem, vector_elem in zip(row, v)) 
-            for row in m
-        )
+        sum(row_elem*vector_elem for row_elem, vector_elem in zip(row, v))
+        for row in m
+    )
 
 
 def multiply_matrix_vector3(m, v):
@@ -25,6 +25,7 @@ def matrix_multiply(m1, m2):
         ) for row_m1 in m1
     )
 
+
 def matrix_power(power, matrix):
     if power < 1:
         raise ValueError("Argument 'power' must be >=1, is {}".format(power))
@@ -32,6 +33,5 @@ def matrix_power(power, matrix):
     result = matrix
     for _ in range(power-1):
         result = matrix_multiply(result, matrix)
-    
-    return result
 
+    return result

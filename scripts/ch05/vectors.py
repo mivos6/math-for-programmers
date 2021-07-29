@@ -1,7 +1,16 @@
 import math
 
 
+def len_equal(*vectors):
+    for v in vectors[1:]:
+        if not len(v) == len(vectors[0]):
+            return False
+    return True
+
+
 def add(*vectors):
+    if not len_equal(*vectors):
+        raise ValueError('All input vectors must be of same length')
     return tuple(map(sum, zip(*vectors)))
 
 
