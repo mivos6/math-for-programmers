@@ -24,3 +24,14 @@ def matrix_multiply(m1, m2):
             dot(row_m1, column_m2) for column_m2 in m2_columns
         ) for row_m1 in m1
     )
+
+def matrix_power(power, matrix):
+    if power < 1:
+        raise ValueError("Argument 'power' must be >=1, is {}".format(power))
+
+    result = matrix
+    for _ in range(power-1):
+        result = matrix_multiply(result, matrix)
+    
+    return result
+
