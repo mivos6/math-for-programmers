@@ -1,7 +1,16 @@
 import math
 
 
+def len_equal(*vectors):
+    for v in vectors[1:]:
+        if not len(v) == len(vectors[0]):
+            return False
+    return True
+
+
 def add(*vectors):
+    if not len_equal(*vectors):
+        raise ValueError('All input vectors must be of same length')
     return tuple(map(sum, zip(*vectors)))
 
 
@@ -105,3 +114,10 @@ def rotate_x(radians, vector):
 
     yr, zr = rotate2d(radians, (y, z))
     return x, yr, zr
+
+
+def linear_combination(scalars, *vectors):
+    assert len(scalars) == len(vectors), "{} != {}".format(len(scalars), len(vectors))
+
+    scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
+    return add(*scaled)

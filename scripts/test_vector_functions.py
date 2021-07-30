@@ -1,6 +1,6 @@
 #from hypothesis import given, strategies as st
 import pytest
-from vectors import add
+from .vectors import add
 
 
 #scalars = st.floats(min_value=-1000, max_value=1000, allow_nan=False)

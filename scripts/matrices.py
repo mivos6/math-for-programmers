@@ -1,4 +1,4 @@
-from vectors import *
+from .vectors import *
 
 
 def multiply_matrix_vector(m, v):
