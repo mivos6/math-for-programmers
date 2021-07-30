@@ -3,8 +3,8 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import matplotlib.cm
-from vectors import *
-from transformations import *
+from .vectors import *
+from .transformations import *
 from collections import namedtuple
 import PIL.Image
 import functools

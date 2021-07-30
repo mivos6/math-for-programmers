@@ -1,4 +1,4 @@
-from vectors import add, scale, rotate_z, rotate_x
+from .vectors import add, scale, rotate_z, rotate_x
 
 
 def map_to_polygons(transformation, polygons):

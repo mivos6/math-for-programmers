@@ -1,6 +1,6 @@
 from hypothesis import given, strategies as st
-from transformation_test_utils import assert_transformation_is_linear
-from transformations import rotate_z_by, translate_by
+from .transformation_test_utils import assert_transformation_is_linear
+from .transformations import rotate_z_by, translate_by
 
 scalars = st.floats(min_value=-1000, max_value=1000, allow_nan=False)
 vectors = st.tuples(scalars, scalars, scalars)

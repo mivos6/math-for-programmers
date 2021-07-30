@@ -32,10 +32,11 @@ class Arrow2D():
 
 
 class Segment2D():
-    def __init__(self, start_point, end_point, color=blue):
+    def __init__(self, start_point, end_point, color=blue, linestyle='solid'):
         self.start_point = start_point
         self.end_point = end_point
         self.color = color
+        self.linestyle = linestyle
 
 
 # helper function to extract all the vectors from a list of objects
@@ -131,7 +132,8 @@ def draw2d(*objects, origin=True, axes=True, grid=(1, 1), nice_aspect_ratio=True
         elif type(object) == Segment2D:
             x1, y1 = object.start_point
             x2, y2 = object.end_point
-            plt.plot([x1, x2], [y1, y2], color=object.color)
+            plt.plot([x1, x2], [y1, y2], color=object.color,
+                     linestyle=object.linestyle)
         else:
             raise TypeError("Unrecognized object: {}".format(object))
 

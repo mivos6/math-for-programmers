@@ -1,4 +1,4 @@
-from vectors import add, subtract, scale
+from .vectors import add, subtract, scale
 
 
 def epsilon_equal(u, v, epsilon):
