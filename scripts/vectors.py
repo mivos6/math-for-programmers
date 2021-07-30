@@ -64,6 +64,8 @@ def unit(v):
 
 
 def dot(u, v):
+    if not len_equal(u, v):
+        raise ValueError('All input vectors must be of same length')
     return sum([cu * cv for cu, cv in zip(u, v)])
 
 
@@ -72,6 +74,9 @@ def angle(u, v):
 
 
 def cross(u, v):
+    if not len_equal(u, v, (0, 0, 0)):
+        raise ValueError('Input vectors must 3D')
+
     ux, uy, uz = u[0], u[1], u[2]
     vx, vy, vz = v[0], v[1], v[2]
     return (uy * vz - uz * vy), (uz * vx - ux * vz), (ux * vy - uy * vx)
@@ -117,7 +122,8 @@ def rotate_x(radians, vector):
 
 
 def linear_combination(scalars, *vectors):
-    assert len(scalars) == len(vectors), "{} != {}".format(len(scalars), len(vectors))
+    if not len_equal(scalars, vectors):
+        raise ValueError('There must be the same number of scalars and vectors')
 
     scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
     return add(*scaled)
