@@ -1,5 +1,5 @@
 import math
-
+from .compare import vector_epsilon_equal
 
 def len_equal(*vectors):
     for v in vectors[1:]:
@@ -91,6 +91,8 @@ def normal(triangle):
 
 
 def projection_length(vector, projection_vector):
+    if vector_epsilon_equal(projection_vector, (0, 0, 0)):
+        raise ValueError('Projection vector cannot be (0, 0, 0)')
     return dot(vector, projection_vector) / length(projection_vector)
 
 
@@ -124,6 +126,8 @@ def rotate_x(radians, vector):
 def linear_combination(scalars, *vectors):
     if not len_equal(scalars, vectors):
         raise ValueError('There must be the same number of scalars and vectors')
+    if not len_equal(*vectors):
+        raise ValueError('All input vectors must be of same length')
 
     scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
     return add(*scaled)
